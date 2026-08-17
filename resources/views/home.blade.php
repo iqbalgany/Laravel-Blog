@@ -1,0 +1,19 @@
+ <x-layout :title="$title">
+
+     <main>
+         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+             <!-- Your content -->
+             <p>Welcome to my Home Page</p>
+
+             <div class="flex mt-3">
+                 @for ($i = 1; $i <= 10; $i++)
+                     @if ($i % 2 !== 0)
+                         <div class="w-8 h-8 bg-teal-500 text-white p-0 me-1 text-xs grid place-items-center">
+                             {{ $i }}</div>
+                     @endif
+                 @endfor
+             </div>
+         </div>
+     </main>
+
+ </x-layout>
