@@ -3,34 +3,67 @@
       <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Post</h3>
       </div>
+
+      {{-- VALIDATION ERRORS --}}
+      {{-- @if ($errors->any())
+          <div class="flex p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft border border-danger-subtle"
+              role="alert">
+              <svg class="w-4 h-4 me-2 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                  height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+              <span class="sr-only">Danger</span>
+              <div>
+                  <span class="font-medium">Ensure that these requirements are met:</span>
+                  <ul class="mt-2 list-disc list-outside space-y-1 ps-2.5">
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          </div>
+      @endif --}}
+
       <!-- Modal body -->
       <form action="/dashboard" method="POST">
           @csrf
           <div class="mb-4">
               <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
               <input type="text" name="title" id="title"
-                  class=" border bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Type post title" required>
+                  class="@error('title') bg-red-50 border-red-500 text-red-700  focus:ring-red-500 focus:border-red-500  placeholder-red-700 @enderror border bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  placeholder="Type post title" autofocus value="{{ old('title') }}">
+              @error('title')
+                  <p class="mt-2.5 text-sm text-fg-danger-strong">{{ $message }}</p>
+              @enderror
+
           </div>
 
           <div class="mb-4">
               <label for="category"
-                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label><select
-                  id="category" name="category_id"
-                  class=" border bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+
+              <select id="category" name="category_id"
+                  class="@error('category_id') bg-red-50 border-red-500 text-red-700  focus:ring-red-500 focus:border-red-500  placeholder-red-700 @enderror border bg-gray-50 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
 
                   <option selected value="">Select category</option>
 
                   @foreach (App\Models\Category::get() as $category)
-                      <option value="{{ $category->id }}">{{ $category->name }}</option>
+                      <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>{{ $category->name }}</option>
                   @endforeach
               </select>
+              @error('category_id')
+                  <p class="mt-2.5 text-sm text-fg-danger-strong">{{ $message }}</p>
+              @enderror
           </div>
           <div class="mb-4">
               <label for="body" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Body</label>
               <textarea id="body" name="body" rows="4"
-                  class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Write post body here"></textarea>
+                  class=" @error('body') bg-red-50 border-red-500 text-red-700  focus:ring-red-500 focus:border-red-500  placeholder-red-700 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  placeholder="Write post body here">{{ old('body') }}</textarea>
+              @error('body')
+                  <p class="mt-2.5 text-sm text-fg-danger-strong">{{ $message }}</p>
+              @enderror
           </div>
           <div class="flex gap-3">
               <button type="submit"

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class PostDashboardController extends Controller
@@ -36,6 +37,24 @@ class PostDashboardController extends Controller
      */
     public function store(Request $request)
     {
+        // $request->validate([
+        //     'title' => 'required|unique:posts|max:255|min:4',
+        //     'category_id' => 'required',
+        //     'body' => 'required'
+        // ]);
+
+        Validator::make($request->all(), [
+            'title' => 'required|unique:posts|max:255|min:4',
+            'category_id' => 'required',
+            'body' => 'required'
+        ], [
+            'required' => 'Field :attribute harus diisi'
+        ], [
+            'title' => 'judul',
+            'category_id' => 'category',
+            'body' => 'isi'
+        ])->validate();
+
         Post::create([
             'title' => $request->title,
             'author_id' => Auth::user()->id,
@@ -44,7 +63,7 @@ class PostDashboardController extends Controller
             'body' => $request->body,
         ]);
 
-        return redirect('/dashboard');
+        return redirect('/dashboard')->with(['success' =>  'Your post has been save!']);
     }
 
     /**
