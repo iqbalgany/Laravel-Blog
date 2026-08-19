@@ -32,14 +32,14 @@ Route::get('/contact', function () {
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [PostDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard', [PostDashboardController::class, 'store']);
+    Route::get('/dashboard/create', [PostDashboardController::class, 'create']);
+    Route::delete('/dashboard/{post:slug}', [PostDashboardController::class, 'destroy']);
+    Route::get('/dashboard/{post:slug}', [PostDashboardController::class, 'show']);
+});
 
-Route::get('/dashboard', [PostDashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::post('/dashboard', [PostDashboardController::class, 'store'])->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/dashboard/create', [PostDashboardController::class, 'create'])->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/dashboard/{post:slug}', [PostDashboardController::class, 'show'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
