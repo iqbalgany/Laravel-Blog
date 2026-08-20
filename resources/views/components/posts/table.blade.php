@@ -31,7 +31,7 @@
 <section class="p-3 sm:p-5 antialiased">
     <h2 class="text-xl font-semibold pl-4 mb-4">Post by: {{ Auth::user()->name }}</h2>
     <div class="max-w-screen-xl px-4">
-        <div class="bg-white dark:bg-gray-800 relative border sm:rounded-lg overflow-hidden">
+        <div class="bg-white relative border sm:rounded-lg overflow-hidden">
             <div class="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-4 p-4">
                 <div class="w-full md:w-1/2">
                     <form class="flex items-center">
