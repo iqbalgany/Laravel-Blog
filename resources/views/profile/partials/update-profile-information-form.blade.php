@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
@@ -57,6 +57,25 @@
             @endif
         </div>
 
+        {{-- Upload Avatar  --}}
+        <div>
+            <label class="block mb-2.5 text-sm text-gray-600 font-medium" for="avatar">Upload Avatar</label>
+            <input
+                class="cursor-pointer bg-neutral-secondary-medium border border-default-medium text-gray-800 text-sm rounded-base focus:ring-brand focus:border-brand block w-full shadow-xs placeholder:text-body 
+        @error('avatar') bg-red-50 border-red-500 text-red-700 focus:ring-red-500 focus:border-red-500 placeholder-red-700 border-2 @enderror"
+                id="avatar" type="file" name="avatar" accept="image/*">
+            <div class="block my-1 text-sm text-gray-600 font-medium">.png or .jpg</div>
+            @error('avatar')
+                <p class="mt-4 text-sm text-red-700">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <img class="ms-2 w-11 h-11 rounded-full mx-auto"
+                src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('img/avatar.png') }}"
+                alt="{{ Auth::user()->username }}" id="avatar-preview">
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -67,3 +86,19 @@
         </div>
     </form>
 </section>
+
+<script>
+    const input = document.getElementById('avatar');
+    const previewPhoto = () => {
+        const file = input.files;
+        if (file) {
+            const fileReader = new FileReader();
+            const preview = document.getElementById('avatar-preview');
+            fileReader.onload = function(event) {
+                preview.setAttribute('src', event.target.result);
+            }
+            fileReader.readAsDataURL(file[0]);
+        }
+    }
+    input.addEventListener("change", previewPhoto);
+</script>
