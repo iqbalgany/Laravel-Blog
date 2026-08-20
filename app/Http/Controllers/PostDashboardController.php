@@ -37,11 +37,7 @@ class PostDashboardController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title' => 'required|unique:posts|max:255|min:4',
-        //     'category_id' => 'required',
-        //     'body' => 'required'
-        // ]);
+
 
         Validator::make($request->all(), [
             'title' => 'required|unique:posts|max:255|min:4',
@@ -77,17 +73,37 @@ class PostDashboardController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Post $post)
     {
-        //
+        return view('dashboard.edit', ['post' => $post]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        Validator::make($request->all(), [
+            'title' => 'required|max:255|min:4|unique:posts,title' . $post->id,
+            'category_id' => 'required',
+            'body' => 'required'
+        ], [
+            'required' => 'Field :attribute harus diisi'
+        ], [
+            'title' => 'judul',
+            'category_id' => 'category',
+            'body' => 'isi'
+        ])->validate();
+
+        $post->update([
+            'title' => $request->title,
+            'author_id' => Auth::user()->id,
+            'category_id' => $request->category_id,
+            'slug' => Str::slug($request->title),
+            'body' => $request->body,
+        ]);
+
+        return redirect('/dashboard')->with(['success' =>  'Your post has been updated!']);
     }
 
     /**
