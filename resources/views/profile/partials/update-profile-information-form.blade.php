@@ -1,3 +1,9 @@
+@push('style')
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <!-- FilePond Image Preview CSS -->
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+@endpush
+
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
@@ -60,11 +66,11 @@
         {{-- Upload Avatar  --}}
         <div>
             <label class="block mb-2.5 text-sm text-gray-600 font-medium" for="avatar">Upload Avatar</label>
-            <input
-                class="cursor-pointer bg-neutral-secondary-medium border border-default-medium text-gray-800 text-sm rounded-base focus:ring-brand focus:border-brand block w-full shadow-xs placeholder:text-body 
-        @error('avatar') bg-red-50 border-red-500 text-red-700 focus:ring-red-500 focus:border-red-500 placeholder-red-700 border-2 @enderror"
-                id="avatar" type="file" name="avatar" accept="image/*">
+
+            <input id="avatar" type="file" name="avatar" accept="image/*">
+
             <div class="block my-1 text-sm text-gray-600 font-medium">.png or .jpg</div>
+
             @error('avatar')
                 <p class="mt-4 text-sm text-red-700">{{ $message }}</p>
             @enderror
@@ -87,18 +93,54 @@
     </form>
 </section>
 
-<script>
-    const input = document.getElementById('avatar');
-    const previewPhoto = () => {
-        const file = input.files;
-        if (file) {
-            const fileReader = new FileReader();
-            const preview = document.getElementById('avatar-preview');
-            fileReader.onload = function(event) {
-                preview.setAttribute('src', event.target.result);
+@push('script')
+    <script>
+        const input = document.getElementById('avatar');
+        const previewPhoto = () => {
+            const file = input.files;
+            if (file) {
+                const fileReader = new FileReader();
+                const preview = document.getElementById('avatar-preview');
+                fileReader.onload = function(event) {
+                    preview.setAttribute('src', event.target.result);
+                }
+                fileReader.readAsDataURL(file[0]);
             }
-            fileReader.readAsDataURL(file[0]);
         }
-    }
-    input.addEventListener("change", previewPhoto);
-</script>
+        input.addEventListener("change", previewPhoto);
+    </script>
+
+    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
+    <script>
+        FilePond.registerPlugin(FilePondPluginImagePreview);
+        FilePond.registerPlugin(FilePondPluginFileValidateType);
+        FilePond.registerPlugin(FilePondPluginFileValidateSize);
+        FilePond.registerPlugin(FilePondPluginImageTransform);
+        FilePond.registerPlugin(FilePondPluginImageResize);
+
+
+
+        const inputElement = document.querySelector('#avatar');
+
+        const pond = FilePond.create(inputElement, {
+            acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+            maxFileSize: '1MB',
+            imageResizeTargetWidth: '600',
+            imageResizeMode: 'contain',
+            imageResizeUpscale: false,
+            server: {
+                url: '/upload',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+
+            }
+        });
+    </script>
+@endpush

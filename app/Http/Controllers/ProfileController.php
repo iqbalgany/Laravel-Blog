@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -34,18 +35,44 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        if ($request->hasFIle('avatar')) {
+        // if ($request->hasFIle('avatar')) {
+        //     if (!empty($request->user()->avatar)) {
+        //         Storage::disk('public')->delete($request->user()->avatar);
+        //     }
+        //     $path = $request->file('avatar')->store('img', 'public');
+        //     $validated['avatar'] = $path;
+        // }
+
+        if ($request->avatar) {
             if (!empty($request->user()->avatar)) {
                 Storage::disk('public')->delete($request->user()->avatar);
             }
-            $path = $request->file('avatar')->store('img', 'public');
-            $validated['avatar'] = $path;
+
+            $newFileName = Str::after($request->avatar, 'tmp/');
+            $destination = "img/$newFileName";
+
+            Storage::disk('public')->move($request->avatar, $destination);
+
+            if (Storage::disk('public')->exists($request->avatar)) {
+                Storage::disk('public')->delete($request->avatar);
+            }
+
+            $validated['avatar'] = $destination;
         }
 
         // $request->user()->save();
         $request->user()->update($validated);
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function upload(Request $request)
+    {
+        if ($request->hasFIle('avatar')) {
+            $path = $request->file('avatar')->store('tmp', 'public');
+        }
+
+        return $path;
     }
 
     /**
