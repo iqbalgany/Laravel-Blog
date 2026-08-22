@@ -59,8 +59,7 @@ return [
         ],
 
         'single' => [
-            'driver' => 'single',
-            'path' => env('APP_ENV') === 'production' ? '/tmp/laravel.log' : storage_path('logs/laravel.log'),
+            'driver' => 'errorlog',
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
