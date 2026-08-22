@@ -59,7 +59,8 @@ return [
         ],
 
         'single' => [
-            'driver' => 'errorlog',
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],
@@ -108,7 +109,6 @@ return [
             'handler_with' => [
                 'stream' => 'php://stderr',
             ],
-            'replace_placeholders' => true,
             'formatter' => env('LOG_STDERR_FORMATTER'),
             'processors' => [PsrLogMessageProcessor::class],
         ],
