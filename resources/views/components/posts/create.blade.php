@@ -1,32 +1,15 @@
+  @push('style')
+      <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+  @endpush
+
   <div class="max-w-4xl relative p-4 bg-white rounded-lg border dark:bg-gray-800 sm:p-5">
       <!-- Modal header -->
       <div class="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Post</h3>
       </div>
 
-      {{-- VALIDATION ERRORS --}}
-      {{-- @if ($errors->any())
-          <div class="flex p-4 mb-4 text-sm text-fg-danger-strong rounded-base bg-danger-soft border border-danger-subtle"
-              role="alert">
-              <svg class="w-4 h-4 me-2 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                  height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-              <span class="sr-only">Danger</span>
-              <div>
-                  <span class="font-medium">Ensure that these requirements are met:</span>
-                  <ul class="mt-2 list-disc list-outside space-y-1 ps-2.5">
-                      @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
-              </div>
-          </div>
-      @endif --}}
-
       <!-- Modal body -->
-      <form action="/dashboard" method="POST">
+      <form action="/dashboard" method="POST" id="post-form">
           @csrf
           <div class="mb-4">
               <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
@@ -36,7 +19,6 @@
               @error('title')
                   <p class="mt-2.5 text-sm text-fg-danger-strong">{{ $message }}</p>
               @enderror
-
           </div>
 
           <div class="mb-4">
@@ -59,8 +41,10 @@
           <div class="mb-4">
               <label for="body" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Body</label>
               <textarea id="body" name="body" rows="4"
-                  class=" @error('body') bg-red-50 border-red-500 text-red-700  focus:ring-red-500 focus:border-red-500  placeholder-red-700 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  class="hidden @error('body') bg-red-50 border-red-500 text-red-700  focus:ring-red-500 focus:border-red-500  placeholder-red-700 @enderror block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Write post body here">{{ old('body') }}</textarea>
+              <div id="editor">
+              </div>
               @error('body')
                   <p class="mt-2.5 text-sm text-fg-danger-strong">{{ $message }}</p>
               @enderror
@@ -89,3 +73,29 @@
           </div>
       </form>
   </div>
+
+  @push('script')
+      <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+      <script>
+          const quill = new Quill('#editor', {
+              theme: 'snow',
+              placeholder: 'Write post body here'
+          });
+
+          const postForm = document.querySelector('#post-form');
+          const postBody = document.querySelector('#body');
+          const quillEditor = document.querySelector('#editor');
+
+
+          postForm.addEventListener('submit', function(e) {
+              e.preventDefault();
+
+              const content = quillEditor.children[0].innerHTML;
+
+              postBody.value = content;
+
+              this.submit();
+          })
+      </script>
+  @endpush
