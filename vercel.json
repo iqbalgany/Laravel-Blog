@@ -42,6 +42,7 @@
         "LOG_CHANNEL": "stderr",
         "LOG_STACK": "single",
         "LOG_SLACK_WEBHOOK_URL": "",
+        "IS_SERVERLESS": "true",
 
         "SESSION_DRIVER": "cookie",
         "SESSION_LIFETIME": "120",
