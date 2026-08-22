@@ -40,6 +40,8 @@
         "DB_PASSWORD": "622bd739aa06df8a25834511937fe9aa7b383db2",
 
         "LOG_CHANNEL": "stderr",
+        "LOG_STACK": "single",
+        "LOG_SLACK_WEBHOOK_URL": "",
 
         "SESSION_DRIVER": "cookie",
         "SESSION_LIFETIME": "120",
